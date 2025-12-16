@@ -10,7 +10,7 @@ public class Display extends JFrame {
     private int currentQuestionIndex;
 
     public Display() {
-        setSize(500, 450); // Increased size for better text display
+        setSize(550, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setTitle("Bonus Questions Review");
@@ -18,21 +18,17 @@ public class Display extends JFrame {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        // Create and add title panel
         TitlePanel titlePanel = new TitlePanel(this);
         cardPanel.add(titlePanel, "Title");
 
-        // Load questions and answers from file
         questions = loadQuestionsFromFile("Questions.txt");
 
-        // Create question panels dynamically
         for (int i = 0; i < questions.size(); i++) {
             QuestionData qd = questions.get(i);
             QuestionPanel qPanel = new QuestionPanel(this, qd.questionText, qd.answers, qd.correctAnswerIndex);
             cardPanel.add(qPanel, "Question" + (i + 1));
         }
 
-        // Create and add the end panel
         EndPanel endPanel = new EndPanel(this);
         cardPanel.add(endPanel, "EndPanel");
 
@@ -73,7 +69,7 @@ public class Display extends JFrame {
         if (!questions.isEmpty()) {
             cardLayout.show(cardPanel, "Question1");
         } else {
-            cardLayout.show(cardPanel, "Title"); // Stay on title if no questions
+            cardLayout.show(cardPanel, "Title");
         }
     }
 
@@ -82,7 +78,6 @@ public class Display extends JFrame {
         if (currentQuestionIndex < questions.size()) {
             cardLayout.show(cardPanel, "Question" + (currentQuestionIndex + 1));
         } else {
-            // Quiz is over
             cardLayout.show(cardPanel, "EndPanel");
         }
     }

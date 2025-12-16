@@ -13,7 +13,6 @@ public class QuestionPanel extends JPanel {
     JButton three;
     JButton four;
 
-    // Constructor now takes Display, question data, and the correct answer index
     public QuestionPanel(Display display, String ques, String[] answers, int correctAnswerIndex) {
         setLayout(new BorderLayout());
 
@@ -24,10 +23,10 @@ public class QuestionPanel extends JPanel {
         q = new JPanel();
         q.setLayout(new BorderLayout());
         q.setBackground(Color.lightGray);
-        q.setBorder(BorderFactory.createEmptyBorder(20, 15, 20, 15));
+        q.setBorder(BorderFactory.createEmptyBorder(25, 20, 25, 20));
 
         question = new JTextArea(ques);
-        question.setFont(new Font("Arial", Font.BOLD, 14));
+        question.setFont(new Font("Arial", Font.BOLD, 16));
         question.setLineWrap(true);
         question.setWrapStyleWord(true);
         question.setEditable(false);
@@ -38,9 +37,8 @@ public class QuestionPanel extends JPanel {
         a = new JPanel();
         a.setLayout(new GridLayout(2, 2, 10, 10));
         a.setBackground(Color.gray);
-        a.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        a.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        // Create a listener that checks the answer
         ActionListener answerListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,10 +56,8 @@ public class QuestionPanel extends JPanel {
                 }
 
                 if (selectedAnswer == correctAnswerIndex) {
-                    // Correct answer, move to the next question
                     display.nextQuestion();
                 } else {
-                    // Incorrect answer, show a message
                     JOptionPane.showMessageDialog(
                             display,
                             "Incorrect. Please try again.",
@@ -72,19 +68,23 @@ public class QuestionPanel extends JPanel {
             }
         };
 
-        one = new JButton(answers[0]);
+        one = new JButton("<html><center>" + answers[0] + "</center></html>");
+        one.setFont(new Font("Arial", Font.PLAIN, 14));
         one.addActionListener(answerListener);
         a.add(one);
 
-        two = new JButton(answers[1]);
+        two = new JButton("<html><center>" + answers[1] + "</center></html>");
+        two.setFont(new Font("Arial", Font.PLAIN, 14));
         two.addActionListener(answerListener);
         a.add(two);
 
-        three = new JButton(answers[2]);
+        three = new JButton("<html><center>" + answers[2] + "</center></html>");
+        three.setFont(new Font("Arial", Font.PLAIN, 14));
         three.addActionListener(answerListener);
         a.add(three);
 
-        four = new JButton(answers[3]);
+        four = new JButton("<html><center>" + answers[3] + "</center></html>");
+        four.setFont(new Font("Arial", Font.PLAIN, 14));
         four.addActionListener(answerListener);
         a.add(four);
 
