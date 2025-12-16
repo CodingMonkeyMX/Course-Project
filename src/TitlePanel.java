@@ -8,7 +8,7 @@ public class TitlePanel extends JPanel {
 
         // Centered title with white text on green background
         JTextArea title = new JTextArea("Welcome to\nMr. Lauder's\nBonus Questions Review");
-        title.setFont(new Font("Arial", Font.BOLD, 38));
+        title.setFont(new Font("Courier New", Font.BOLD, 38));
         title.setForeground(Color.WHITE); // White text
         title.setLineWrap(true);
         title.setEditable(false);
@@ -27,7 +27,7 @@ public class TitlePanel extends JPanel {
     }
     private JButton createStyledButton(String text, ActionListener listener) {
         JButton button = new JButton("<html><center>" + text + "</center></html>");
-        button.setFont(new Font("Arial", Font.PLAIN, 30));
+        button.setFont(new Font("Courier New", Font.PLAIN, 30));
         button.setBackground(Color.WHITE);
         button.setForeground(new Color(34, 139, 34));
         button.addActionListener(listener);

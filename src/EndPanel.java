@@ -9,7 +9,7 @@ public class EndPanel extends JPanel {
         setBackground(new Color(34, 139, 34));
 
         JLabel endLabel = new JLabel("Quiz Complete! Well Done!");
-        endLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        endLabel.setFont(new Font("Courier New", Font.BOLD, 28));
         endLabel.setForeground(Color.WHITE);
         endLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -26,7 +26,7 @@ public class EndPanel extends JPanel {
     }
     private JButton createStyledButton(String text, ActionListener listener) {
         JButton button = new JButton("<html><center>" + text + "</center></html>");
-        button.setFont(new Font("Arial", Font.PLAIN, 26));
+        button.setFont(new Font("Courier New", Font.PLAIN, 26));
         button.setBackground(Color.WHITE);
         button.setForeground(new Color(34, 139, 34));
         button.addActionListener(listener);

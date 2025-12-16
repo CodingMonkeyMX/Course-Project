@@ -26,18 +26,18 @@ public class QuestionPanel extends JPanel {
         q.setBorder(BorderFactory.createEmptyBorder(25, 20, 25, 20));
 
         question = new JTextArea(ques);
-        question.setFont(new Font("Arial", Font.BOLD, 16));
-        question.setForeground(Color.WHITE); // White-ish text color
+        question.setFont(new Font("Courier New", Font.BOLD, 30));
+        question.setForeground(Color.WHITE);
         question.setLineWrap(true);
         question.setWrapStyleWord(true);
         question.setEditable(false);
-        question.setBackground(new Color(34, 139, 34)); // Match panel background
+        question.setBackground(new Color(34, 139, 34));
         question.setFocusable(false);
         q.add(question, BorderLayout.CENTER);
 
         a = new JPanel();
         a.setLayout(new GridLayout(2, 2, 10, 10));
-        a.setBackground(new Color(20, 100, 20)); // Darker green
+        a.setBackground(new Color(34, 139, 34));
         a.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
         ActionListener answerListener = new ActionListener() {
@@ -88,7 +88,7 @@ public class QuestionPanel extends JPanel {
 
     private JButton createStyledButton(String text, ActionListener listener) {
         JButton button = new JButton("<html><center>" + text + "</center></html>");
-        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setFont(new Font("Courier New", Font.PLAIN, 14));
         button.setBackground(Color.WHITE);
         button.setForeground(new Color(34, 139, 34));
         button.addActionListener(listener);
