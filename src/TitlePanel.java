@@ -5,15 +5,12 @@ public class TitlePanel extends JPanel {
 
     public TitlePanel(Display display) {
         setLayout(new BorderLayout());
-        setBackground(new Color(70, 130, 180));
 
-        JTextArea title = new JTextArea("Welcome to the Bonus Questions Review");
-        title.setFont(new Font("Arial", Font.BOLD, 14));
+        JTextArea title = new JTextArea("Welcome to\nMr. Lauder's\nBonus Questions Review");
+        title.setFont(new Font("Arial", Font.BOLD, 38));
         title.setLineWrap(true);
-        title.setWrapStyleWord(true);
         title.setEditable(false);
-        title.setBackground(Color.lightGray);
-        title.setFocusable(false);
+        title.setBackground(new Color(20, 155, 60));
         add(title, BorderLayout.CENTER);
 
         JButton startButton = new JButton("Start Quiz");
@@ -23,7 +20,7 @@ public class TitlePanel extends JPanel {
         startButton.addActionListener(e -> display.startQuiz());
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false);
+        buttonPanel.setBackground(new Color(20, 155, 60));
         buttonPanel.add(startButton);
         add(buttonPanel, BorderLayout.SOUTH);
     }
