@@ -22,21 +22,22 @@ public class QuestionPanel extends JPanel {
 
         q = new JPanel();
         q.setLayout(new BorderLayout());
-        q.setBackground(Color.lightGray);
+        q.setBackground(new Color(34, 139, 34)); // Green background
         q.setBorder(BorderFactory.createEmptyBorder(25, 20, 25, 20));
 
         question = new JTextArea(ques);
         question.setFont(new Font("Arial", Font.BOLD, 16));
+        question.setForeground(Color.WHITE); // White-ish text color
         question.setLineWrap(true);
         question.setWrapStyleWord(true);
         question.setEditable(false);
-        question.setBackground(Color.lightGray);
+        question.setBackground(new Color(34, 139, 34)); // Match panel background
         question.setFocusable(false);
         q.add(question, BorderLayout.CENTER);
 
         a = new JPanel();
         a.setLayout(new GridLayout(2, 2, 10, 10));
-        a.setBackground(Color.gray);
+        a.setBackground(new Color(20, 100, 20)); // Darker green
         a.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
         ActionListener answerListener = new ActionListener() {
@@ -68,27 +69,29 @@ public class QuestionPanel extends JPanel {
             }
         };
 
-        one = new JButton("<html><center>" + answers[0] + "</center></html>");
-        one.setFont(new Font("Arial", Font.PLAIN, 14));
-        one.addActionListener(answerListener);
+        // Buttons with consistent styling
+        one = createStyledButton(answers[0], answerListener);
         a.add(one);
 
-        two = new JButton("<html><center>" + answers[1] + "</center></html>");
-        two.setFont(new Font("Arial", Font.PLAIN, 14));
-        two.addActionListener(answerListener);
+        two = createStyledButton(answers[1], answerListener);
         a.add(two);
 
-        three = new JButton("<html><center>" + answers[2] + "</center></html>");
-        three.setFont(new Font("Arial", Font.PLAIN, 14));
-        three.addActionListener(answerListener);
+        three = createStyledButton(answers[2], answerListener);
         a.add(three);
 
-        four = new JButton("<html><center>" + answers[3] + "</center></html>");
-        four.setFont(new Font("Arial", Font.PLAIN, 14));
-        four.addActionListener(answerListener);
+        four = createStyledButton(answers[3], answerListener);
         a.add(four);
 
         panel.add(q);
         panel.add(a);
+    }
+
+    private JButton createStyledButton(String text, ActionListener listener) {
+        JButton button = new JButton("<html><center>" + text + "</center></html>");
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setBackground(Color.WHITE);
+        button.setForeground(new Color(34, 139, 34));
+        button.addActionListener(listener);
+        return button;
     }
 }
