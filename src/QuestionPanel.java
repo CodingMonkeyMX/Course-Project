@@ -22,7 +22,7 @@ public class QuestionPanel extends JPanel {
 
         q = new JPanel();
         q.setLayout(new BorderLayout());
-        q.setBackground(new Color(34, 139, 34)); // Green background
+        q.setBackground(new Color(34, 139, 34));
         q.setBorder(BorderFactory.createEmptyBorder(25, 20, 25, 20));
 
         question = new JTextArea(ques);
@@ -56,8 +56,9 @@ public class QuestionPanel extends JPanel {
                     selectedAnswer = 3;
                 }
 
-                if (selectedAnswer == correctAnswerIndex) {
-                    display.nextQuestion();
+                boolean isCorrect = selectedAnswer == correctAnswerIndex;
+                if (isCorrect) {
+                    display.nextQuestion(true);
                 } else {
                     JOptionPane.showMessageDialog(
                             display,
@@ -65,11 +66,11 @@ public class QuestionPanel extends JPanel {
                             "Wrong Answer",
                             JOptionPane.WARNING_MESSAGE
                     );
+                    display.nextQuestion(false);
                 }
             }
         };
 
-        // Buttons with consistent styling
         one = createStyledButton(answers[0], answerListener);
         a.add(one);
 

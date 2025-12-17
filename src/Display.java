@@ -8,6 +8,7 @@ public class Display extends JFrame {
     private JPanel cardPanel;
     private ArrayList<QuestionData> questions;
     private int currentQuestionIndex;
+    private int score;
 
     public Display() {
         setSize(550, 500);
@@ -66,6 +67,7 @@ public class Display extends JFrame {
 
     public void startQuiz() {
         currentQuestionIndex = 0;
+        score = 0; // Reset score for a new quiz
         if (!questions.isEmpty()) {
             cardLayout.show(cardPanel, "Question1");
         } else {
@@ -73,16 +75,43 @@ public class Display extends JFrame {
         }
     }
 
-    public void nextQuestion() {
+    public void nextQuestion(boolean isCorrect) {
+        if (isCorrect) {
+            score++;
+        }
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.size()) {
             cardLayout.show(cardPanel, "Question" + (currentQuestionIndex + 1));
         } else {
+            saveScore();
             cardLayout.show(cardPanel, "EndPanel");
         }
     }
 
     public void restartQuiz() {
         cardLayout.show(cardPanel, "Title");
+    }
+
+    private void saveScore() {
+        try (FileWriter writer = new FileWriter("HighScores.txt", true)) {
+            writer.write("Score: " + score + "/" + questions.size() + "\n");
+        } catch (IOException e) {
+            showError("Unable to save score to file.");
+        }
+    }
+
+    public String getHighScores() {
+        StringBuilder scores = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader("HighScores.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                scores.append(line).append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            return "No high scores yet!";
+        } catch (IOException e) {
+            showError("Unable to read high scores.");
+        }
+        return scores.toString();
     }
 }
