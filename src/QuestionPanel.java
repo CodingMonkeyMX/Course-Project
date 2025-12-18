@@ -22,7 +22,10 @@ public class QuestionPanel extends JPanel {
         panel.setLayout(new BorderLayout());
         this.add(panel, BorderLayout.CENTER);
 
-        // Progress indicator at top
+        // Top panel with progress and factorial button
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(new Color(25, 100, 25));
+
         progressLabel = new JLabel("Question " + questionNum + " of " + totalQuestions);
         progressLabel.setFont(new Font("Courier New", Font.BOLD, 18));
         progressLabel.setForeground(Color.WHITE);
@@ -30,7 +33,23 @@ public class QuestionPanel extends JPanel {
         progressLabel.setOpaque(true);
         progressLabel.setHorizontalAlignment(SwingConstants.CENTER);
         progressLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panel.add(progressLabel, BorderLayout.NORTH);
+
+        JButton factorialButton = new JButton("Factorial");
+        factorialButton.setFont(new Font("Courier New", Font.PLAIN, 12));
+        factorialButton.setBackground(Color.YELLOW);
+        factorialButton.setForeground(new Color(34, 139, 34));
+        factorialButton.setFocusPainted(false);
+        factorialButton.setMargin(new Insets(5, 10, 5, 10));
+        factorialButton.addActionListener(e -> showFactorialCalculator());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        buttonPanel.setBackground(new Color(25, 100, 25));
+        buttonPanel.add(factorialButton);
+
+        topPanel.add(progressLabel, BorderLayout.CENTER);
+        topPanel.add(buttonPanel, BorderLayout.EAST);
+
+        panel.add(topPanel, BorderLayout.NORTH);
 
         q = new JPanel();
         q.setLayout(new BorderLayout());
@@ -142,5 +161,57 @@ public class QuestionPanel extends JPanel {
         button.setBorderPainted(true);
         button.addActionListener(listener);
         return button;
+    }
+
+    private void showFactorialCalculator() {
+        String input = JOptionPane.showInputDialog(
+                this,
+                "Enter a number to calculate its factorial:",
+                "Factorial Calculator",
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (input != null && !input.trim().isEmpty()) {
+            try {
+                int n = Integer.parseInt(input.trim());
+                if (n < 0) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Factorial is not defined for negative numbers!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } else if (n > 20) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Number too large! Please enter a number between 0 and 20.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } else {
+                    long result = factorial(n);
+                    JOptionPane.showMessageDialog(
+                            this,
+                            n + "! = " + result,
+                            "Factorial Result",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please enter a valid integer!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+    }
+
+    private long factorial(int n) {
+        if (n == 0 || n == 1) {
+            return 1;
+        }
+        return n * factorial(n - 1);
     }
 }
