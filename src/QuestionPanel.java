@@ -42,8 +42,17 @@ public class QuestionPanel extends JPanel {
         factorialButton.setMargin(new Insets(5, 10, 5, 10));
         factorialButton.addActionListener(e -> showFactorialCalculator());
 
+        JButton arrayButton = new JButton("Array Tools");
+        arrayButton.setFont(new Font("Courier New", Font.PLAIN, 12));
+        arrayButton.setBackground(Color.CYAN);
+        arrayButton.setForeground(new Color(34, 139, 34));
+        arrayButton.setFocusPainted(false);
+        arrayButton.setMargin(new Insets(5, 10, 5, 10));
+        arrayButton.addActionListener(e -> showArrayTools());
+
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBackground(new Color(25, 100, 25));
+        buttonPanel.add(arrayButton);
         buttonPanel.add(factorialButton);
 
         topPanel.add(progressLabel, BorderLayout.CENTER);
@@ -213,5 +222,250 @@ public class QuestionPanel extends JPanel {
             return 1;
         }
         return n * factorial(n - 1);
+    }
+
+    private void showArrayTools() {
+        String[] options = {"Sort Array", "Search Array"};
+        int choice = JOptionPane.showOptionDialog(
+                this,
+                "What would you like to do?",
+                "Array Tools",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice == 0) {
+            showSortMenu();
+        } else if (choice == 1) {
+            showSearchMenu();
+        }
+    }
+
+    private void showSortMenu() {
+        String[] sortOptions = {"Bubble Sort", "Selection Sort", "Insertion Sort"};
+        int choice = JOptionPane.showOptionDialog(
+                this,
+                "Choose a sorting algorithm:",
+                "Sort Array",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                sortOptions,
+                sortOptions[0]
+        );
+
+        if (choice >= 0) {
+            String input = JOptionPane.showInputDialog(
+                    this,
+                    "Enter numbers separated by spaces (e.g., 5 2 8 1 9):",
+                    "Enter Array",
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (input != null && !input.trim().isEmpty()) {
+                try {
+                    String[] parts = input.trim().split("\\s+");
+                    int[] arr = new int[parts.length];
+                    for (int i = 0; i < parts.length; i++) {
+                        arr[i] = Integer.parseInt(parts[i]);
+                    }
+
+                    String original = arrayToString(arr);
+
+                    switch (choice) {
+                        case 0:
+                            bubbleSort(arr);
+                            break;
+                        case 1:
+                            selectionSort(arr);
+                            break;
+                        case 2:
+                            insertionSort(arr);
+                            break;
+                    }
+
+                    String sorted = arrayToString(arr);
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Original: " + original + "\n" +
+                                    "Sorted:   " + sorted + "\n" +
+                                    "Algorithm: " + sortOptions[choice],
+                            "Sort Result",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Please enter valid integers!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        }
+    }
+
+    private void showSearchMenu() {
+        String[] searchOptions = {"Linear Search", "Binary Search"};
+        int choice = JOptionPane.showOptionDialog(
+                this,
+                "Choose a search algorithm:",
+                "Search Array",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                searchOptions,
+                searchOptions[0]
+        );
+
+        if (choice >= 0) {
+            String input = JOptionPane.showInputDialog(
+                    this,
+                    "Enter numbers separated by spaces (e.g., 5 2 8 1 9):",
+                    "Enter Array",
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (input != null && !input.trim().isEmpty()) {
+                try {
+                    String[] parts = input.trim().split("\\s+");
+                    int[] arr = new int[parts.length];
+                    for (int i = 0; i < parts.length; i++) {
+                        arr[i] = Integer.parseInt(parts[i]);
+                    }
+
+                    String target = JOptionPane.showInputDialog(
+                            this,
+                            "Enter the number to search for:",
+                            "Search Target",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+
+                    if (target != null && !target.trim().isEmpty()) {
+                        int searchValue = Integer.parseInt(target.trim());
+                        int result;
+
+                        if (choice == 0) {
+                            result = linearSearch(arr, searchValue);
+                        } else {
+                            // Binary search requires sorted array
+                            bubbleSort(arr);
+                            result = binarySearch(arr, searchValue);
+                        }
+
+                        String message;
+                        if (result != -1) {
+                            message = "Found " + searchValue + " at index " + result + "!\n" +
+                                    "Array: " + arrayToString(arr) + "\n" +
+                                    "Algorithm: " + searchOptions[choice];
+                        } else {
+                            message = searchValue + " was not found in the array.\n" +
+                                    "Array: " + arrayToString(arr) + "\n" +
+                                    "Algorithm: " + searchOptions[choice];
+                        }
+
+                        JOptionPane.showMessageDialog(
+                                this,
+                                message,
+                                "Search Result",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Please enter valid integers!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        }
+    }
+
+    // Sorting algorithms
+    private void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    private void selectionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            int minIdx = i;
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] < arr[minIdx]) {
+                    minIdx = j;
+                }
+            }
+            int temp = arr[minIdx];
+            arr[minIdx] = arr[i];
+            arr[i] = temp;
+        }
+    }
+
+    private void insertionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 1; i < n; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+            arr[j + 1] = key;
+        }
+    }
+
+    // Search algorithms
+    private int linearSearch(int[] arr, int target) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == target) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int binarySearch(int[] arr, int target) {
+        int left = 0;
+        int right = arr.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (arr[mid] == target) {
+                return mid;
+            }
+            if (arr[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    private String arrayToString(int[] arr) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < arr.length; i++) {
+            sb.append(arr[i]);
+            if (i < arr.length - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }
