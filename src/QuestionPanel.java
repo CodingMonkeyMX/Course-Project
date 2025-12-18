@@ -4,21 +4,33 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class QuestionPanel extends JPanel {
-    JPanel panel;
-    JPanel q;
-    JPanel a;
-    JTextArea question;
-    JButton one;
-    JButton two;
-    JButton three;
-    JButton four;
+    private JPanel panel;
+    private JPanel q;
+    private JPanel a;
+    private JTextArea question;
+    private JButton one;
+    private JButton two;
+    private JButton three;
+    private JButton four;
+    private JLabel progressLabel;
+    private boolean answered = false;
 
-    public QuestionPanel(Display display, String ques, String[] answers, int correctAnswerIndex) {
+    public QuestionPanel(Display display, String ques, String[] answers, int correctAnswerIndex, int questionNum, int totalQuestions) {
         setLayout(new BorderLayout());
 
         panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 1));
+        panel.setLayout(new BorderLayout());
         this.add(panel, BorderLayout.CENTER);
+
+        // Progress indicator at top
+        progressLabel = new JLabel("Question " + questionNum + " of " + totalQuestions);
+        progressLabel.setFont(new Font("Courier New", Font.BOLD, 18));
+        progressLabel.setForeground(Color.WHITE);
+        progressLabel.setBackground(new Color(25, 100, 25));
+        progressLabel.setOpaque(true);
+        progressLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        progressLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.add(progressLabel, BorderLayout.NORTH);
 
         q = new JPanel();
         q.setLayout(new BorderLayout());
@@ -43,6 +55,9 @@ public class QuestionPanel extends JPanel {
         ActionListener answerListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (answered) return; // Prevent multiple clicks
+                answered = true;
+
                 JButton clickedButton = (JButton) e.getSource();
                 int selectedAnswer = -1;
 
@@ -57,16 +72,47 @@ public class QuestionPanel extends JPanel {
                 }
 
                 boolean isCorrect = selectedAnswer == correctAnswerIndex;
+
+                // Visual feedback
+                JButton[] buttons = {one, two, three, four};
+
                 if (isCorrect) {
-                    display.nextQuestion(true);
+                    // Immediately move to next question on correct answer
+                    display.nextQuestion(isCorrect);
+
+                    // Reset for next time this panel is shown
+                    answered = false;
                 } else {
+                    // Show visual feedback for incorrect answer
+                    clickedButton.setBackground(new Color(244, 67, 54)); // Red
+                    clickedButton.setForeground(Color.WHITE);
+                    // Show correct answer
+                    buttons[correctAnswerIndex].setBackground(new Color(76, 175, 80)); // Green
+                    buttons[correctAnswerIndex].setForeground(Color.WHITE);
+
+                    // Disable all buttons
+                    for (JButton btn : buttons) {
+                        btn.setEnabled(false);
+                    }
+
+                    // Show error dialog
                     JOptionPane.showMessageDialog(
                             display,
-                            "Incorrect. Please try again.",
+                            "Incorrect. The correct answer was: " + answers[correctAnswerIndex],
                             "Wrong Answer",
-                            JOptionPane.WARNING_MESSAGE
+                            JOptionPane.ERROR_MESSAGE
                     );
-                    display.nextQuestion(false);
+
+                    // Move to next question after dialog closes
+                    display.nextQuestion(isCorrect);
+
+                    // Reset for next time this panel is shown
+                    answered = false;
+                    for (JButton btn : buttons) {
+                        btn.setEnabled(true);
+                        btn.setBackground(Color.WHITE);
+                        btn.setForeground(new Color(34, 139, 34));
+                    }
                 }
             }
         };
@@ -83,15 +129,17 @@ public class QuestionPanel extends JPanel {
         four = createStyledButton(answers[3], answerListener);
         a.add(four);
 
-        panel.add(q);
-        panel.add(a);
+        panel.add(q, BorderLayout.CENTER);
+        panel.add(a, BorderLayout.SOUTH);
     }
 
     private JButton createStyledButton(String text, ActionListener listener) {
         JButton button = new JButton("<html><center>" + text + "</center></html>");
-        button.setFont(new Font("Courier New", Font.PLAIN, 14));
+        button.setFont(new Font("Courier New", Font.PLAIN, 16));
         button.setBackground(Color.WHITE);
         button.setForeground(new Color(34, 139, 34));
+        button.setFocusPainted(false);
+        button.setBorderPainted(true);
         button.addActionListener(listener);
         return button;
     }

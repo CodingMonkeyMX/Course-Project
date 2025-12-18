@@ -26,7 +26,7 @@ public class Display extends JFrame {
 
         for (int i = 0; i < questions.size(); i++) {
             QuestionData qd = questions.get(i);
-            QuestionPanel qPanel = new QuestionPanel(this, qd.questionText, qd.answers, qd.correctAnswerIndex);
+            QuestionPanel qPanel = new QuestionPanel(this, qd.questionText, qd.answers, qd.correctAnswerIndex, i + 1, questions.size());
             cardPanel.add(qPanel, "Question" + (i + 1));
         }
 
@@ -43,19 +43,33 @@ public class Display extends JFrame {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String questionLine;
             while ((questionLine = reader.readLine()) != null) {
+                questionLine = questionLine.trim();
+                if (questionLine.isEmpty()) continue; // Skip empty lines
+
                 String[] answers = new String[4];
-                answers[0] = reader.readLine();
-                answers[1] = reader.readLine();
-                answers[2] = reader.readLine();
-                answers[3] = reader.readLine();
-                int correctIndex = Integer.parseInt(reader.readLine().trim());
+                for (int i = 0; i < 4; i++) {
+                    String answer = reader.readLine();
+                    if (answer == null) {
+                        throw new IOException("Incomplete question data");
+                    }
+                    answers[i] = answer.trim();
+                }
+
+                String correctIndexLine = reader.readLine();
+                if (correctIndexLine == null) {
+                    throw new IOException("Missing correct answer index");
+                }
+                int correctIndex = Integer.parseInt(correctIndexLine.trim());
 
                 questionsList.add(new QuestionData(questionLine, answers, correctIndex));
+
+                // Read blank line separator if it exists
+                reader.readLine();
             }
         } catch (FileNotFoundException e) {
             showError("Questions file not found: " + filename);
         } catch (IOException | NumberFormatException e) {
-            showError("Error reading or parsing the questions file. Ensure it's formatted correctly.");
+            showError("Error reading or parsing the questions file. Ensure it's formatted correctly.\n" + e.getMessage());
         }
         return questionsList;
     }
@@ -67,10 +81,11 @@ public class Display extends JFrame {
 
     public void startQuiz() {
         currentQuestionIndex = 0;
-        score = 0; // Reset score for a new quiz
+        score = 0;
         if (!questions.isEmpty()) {
             cardLayout.show(cardPanel, "Question1");
         } else {
+            showError("No questions available!");
             cardLayout.show(cardPanel, "Title");
         }
     }
@@ -84,6 +99,13 @@ public class Display extends JFrame {
             cardLayout.show(cardPanel, "Question" + (currentQuestionIndex + 1));
         } else {
             saveScore();
+            // Update the EndPanel with the final score before showing it
+            for (Component comp : cardPanel.getComponents()) {
+                if (comp instanceof EndPanel) {
+                    ((EndPanel) comp).updateScore(score, questions.size());
+                    break;
+                }
+            }
             cardLayout.show(cardPanel, "EndPanel");
         }
     }
@@ -112,6 +134,14 @@ public class Display extends JFrame {
         } catch (IOException e) {
             showError("Unable to read high scores.");
         }
-        return scores.toString();
+        return scores.toString().trim();
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getTotalQuestions() {
+        return questions.size();
     }
 }
